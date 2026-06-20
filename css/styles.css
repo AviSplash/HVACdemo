@@ -88,14 +88,14 @@ p.lead { font-size: clamp(1.08rem, 1.7vw, 1.4rem); color: var(--muted); line-hei
 
 /* ---------- Eyebrow ---------- */
 .eyebrow {
-  display: inline-flex; align-items: center; gap: .6rem;
-  font-family: var(--ff-head); font-weight: 800; font-size: .78rem;
-  letter-spacing: .24em; text-transform: uppercase; color: var(--orange);
-  margin-bottom: 1.1rem;
+  display: inline-flex; align-items: center; gap: .55rem;
+  font-family: var(--ff-head); font-weight: 800; font-size: .72rem;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--orange);
+  margin-bottom: 1.2rem; padding: .42rem .85rem .4rem;
+  border: 2px solid currentColor;       /* closed, enclosed tag */
 }
-.eyebrow::before { content: ""; width: 34px; height: 2px; background: var(--orange); }
+.eyebrow::before { content: ""; width: 8px; height: 8px; background: currentColor; flex: none; }
 .section--ink .eyebrow { color: var(--amber); }
-.section--ink .eyebrow::before { background: var(--amber); }
 
 .section-head { max-width: 860px; margin-bottom: clamp(2rem, 5vw, 3.4rem); }
 .section-head.center { margin-inline: auto; }
@@ -159,11 +159,12 @@ p.lead { font-size: clamp(1.08rem, 1.7vw, 1.4rem); color: var(--muted); line-hei
 
 /* ---------- Ticker ---------- */
 .ticker { background: var(--orange); color: #fff; overflow: hidden; border-block: 2px solid var(--ink); }
-.ticker__track { display: inline-flex; white-space: nowrap; will-change: transform; animation: ticker 30s linear infinite; }
+.ticker__track { display: flex; align-items: center; white-space: nowrap; animation: ticker 32s linear infinite;
+  backface-visibility: hidden; -webkit-font-smoothing: antialiased; }
 .ticker__track span { display: inline-flex; align-items: center; font-family: var(--ff-display); text-transform: uppercase;
   font-size: clamp(1rem, 1.8vw, 1.4rem); letter-spacing: .03em; padding: .7rem 0; }
 .ticker__track span::after { content: "✦"; margin: 0 1.6rem; color: var(--ink); font-size: .9em; }
-@keyframes ticker { to { transform: translateX(-50%); } }
+@keyframes ticker { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
 .ticker:hover .ticker__track { animation-play-state: paused; }
 
 /* ---------- HERO ---------- */
