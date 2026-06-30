@@ -220,3 +220,96 @@
     init();
   }
 })();
+
+/* ===== Workshop Sites — demo disclaimer modal =====
+   Dismissible disclaimer shown until the visitor acknowledges that this is a
+   demo and not a real business. Also offers a "book an appointment" action.
+   Self-contained; acknowledgment is remembered so it does not nag on every page. */
+(function () {
+  if (window.__wsModalLoaded) return;
+  window.__wsModalLoaded = true;
+
+  var SLUG = 'hvac';   // utm_source for lead attribution
+  var NAME = 'Atlas Air & Heat';   // demo business name
+  var BASE = 'https://workshopsites.com/';
+  var Q = '?utm_source=' + SLUG + '-demo&utm_medium=referral&utm_campaign=demo_disclaimer';
+  var HOME = BASE + Q;
+  var BOOK = BASE + 'appointment.html' + Q;
+  var KEY = 'wsDisclaimerAck';
+
+  function init() {
+    try { if (localStorage.getItem(KEY) === '1') return; } catch (e) {}
+    if (document.getElementById('ws-modal')) return;
+
+    var style = document.createElement('style');
+    style.textContent = [
+      '#ws-modal{position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(6,15,26,.66);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:0;animation:wsFade .25s ease forwards;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}',
+      '@keyframes wsFade{to{opacity:1}}',
+      '#ws-modal *{box-sizing:border-box}',
+      '#ws-modal .ws-card{position:relative;width:100%;max-width:430px;background:#fff;border-radius:16px;padding:28px 26px 24px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.45);transform:translateY(12px) scale(.98);animation:wsPop .3s cubic-bezier(.2,.7,.2,1) .04s forwards}',
+      '@keyframes wsPop{to{transform:none}}',
+      '#ws-modal .ws-ico{width:54px;height:54px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;background:rgba(232,93,4,.12);color:#E85D04;font-size:26px;line-height:1}',
+      '#ws-modal h2{margin:0 0 9px;font-size:21px;line-height:1.25;color:#0B1F33;font-weight:800}',
+      '#ws-modal p{margin:0 0 20px;font-size:14.5px;line-height:1.6;color:#42566b}',
+      '#ws-modal p b{color:#0B1F33}',
+      '#ws-modal .ws-btn{display:block;width:100%;text-align:center;text-decoration:none;border:none;border-radius:10px;padding:13px 16px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}',
+      '#ws-modal .ws-agree{background:#0B1F33;color:#fff;transition:background .2s ease}',
+      '#ws-modal .ws-agree:hover{background:#13314f}',
+      '#ws-modal .ws-book{margin-top:10px;background:#E85D04;color:#fff;transition:background .2s ease,transform .15s ease}',
+      '#ws-modal .ws-book:hover{background:#F48C06;transform:translateY(-1px)}',
+      '#ws-modal .ws-note{margin:16px 0 0;font-size:12px;color:#8595a6}',
+      '#ws-modal .ws-note a{color:#E85D04;font-weight:700;text-decoration:none}',
+      '#ws-modal .ws-note a:hover{text-decoration:underline}',
+      '#ws-modal .ws-x{position:absolute;top:11px;right:13px;background:none;border:none;color:#9aa7b4;font-size:20px;line-height:1;cursor:pointer;padding:3px}',
+      '#ws-modal .ws-x:hover{color:#0B1F33}',
+      '@media(prefers-reduced-motion:reduce){#ws-modal,#ws-modal .ws-card{animation:none;opacity:1;transform:none}}'
+    ].join('');
+    document.head.appendChild(style);
+
+    var overlay = document.createElement('div');
+    overlay.id = 'ws-modal';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'ws-modal-title');
+    overlay.innerHTML =
+      '<div class="ws-card">' +
+        '<button class="ws-x" type="button" aria-label="Dismiss">×</button>' +
+        '<div class="ws-ico" aria-hidden="true">⚡</div>' +
+        '<h2 id="ws-modal-title">This is a demo site</h2>' +
+        '<p>This website is a <b>demo built by Workshop Sites</b>. <b>' + NAME + '</b> is not a real business &mdash; it&rsquo;s a sample build that shows the kind of site we create for contractors &amp; local businesses.</p>' +
+        '<button class="ws-btn ws-agree" type="button">I understand</button>' +
+        '<a class="ws-btn ws-book" href="' + BOOK + '" target="_blank" rel="noopener">Book an appointment &rarr;</a>' +
+        '<p class="ws-note">Want a site like this? <a href="' + HOME + '" target="_blank" rel="noopener">Visit WorkshopSites.com</a></p>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    var prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    var agreeBtn = overlay.querySelector('.ws-agree');
+    try { agreeBtn.focus(); } catch (e) {}
+
+    function close() {
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener('keydown', onKey);
+      overlay.remove();
+    }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+
+    agreeBtn.addEventListener('click', close);
+    overlay.querySelector('.ws-x').addEventListener('click', close);
+    // book button also counts as acknowledgment, but lets the new tab open first
+    overlay.querySelector('.ws-book').addEventListener('click', function () {
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      setTimeout(close, 0);
+    });
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', onKey);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
