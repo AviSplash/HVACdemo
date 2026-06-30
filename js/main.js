@@ -238,7 +238,7 @@
   var KEY = 'wsDisclaimerAck';
 
   function init() {
-    try { if (localStorage.getItem(KEY) === '1') return; } catch (e) {}
+    try { if (sessionStorage.getItem(KEY) === '1') return; } catch (e) {}
     if (document.getElementById('ws-modal')) return;
 
     var style = document.createElement('style');
@@ -289,7 +289,7 @@
     try { agreeBtn.focus(); } catch (e) {}
 
     function close() {
-      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
       document.body.style.overflow = prevOverflow;
       document.removeEventListener('keydown', onKey);
       overlay.remove();
@@ -300,7 +300,7 @@
     overlay.querySelector('.ws-x').addEventListener('click', close);
     // book button also counts as acknowledgment, but lets the new tab open first
     overlay.querySelector('.ws-book').addEventListener('click', function () {
-      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
       setTimeout(close, 0);
     });
     overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
